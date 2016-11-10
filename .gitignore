@@ -1,3 +1,4 @@
+<<<<<<< e5991b680422c6cb34a2e4011342ad87f3b34827
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -87,3 +88,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Srclib
+.m2-srclib
+.srclib-cache

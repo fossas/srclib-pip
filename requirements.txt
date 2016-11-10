@@ -1,0 +1,2 @@
+virtualenv==13.1.0
+pip==7.1.0

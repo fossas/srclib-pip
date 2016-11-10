@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+
+import sys
+import os
+import os.path
+import subprocess
+
+rootdir = os.path.dirname(os.path.dirname(__file__))
+python = os.path.join(rootdir, ".env", "bin", "python")
+
+args = [python, "-m", "srclib-pip"]
+args.extend(sys.argv[1:])
+subprocess.check_call(args)
