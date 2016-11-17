@@ -1,12 +1,36 @@
 from __future__ import print_function
 
+import sys
 import logging
-from os import path
-from glob import glob
 import pip
 import json
 
-logging.basicConfig()
+from os import path
+from glob import glob
+
+logging_config = dict(
+  version = 1,
+  formatters = {
+    "f": {
+      "format":
+      "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"
+    }
+  },
+  handlers = {
+    "h": {
+      "class": "logging.StreamHandler",
+      "formatter": "f",
+      "level": logging.DEBUG,
+      "stream": "ext://sys.stderr"
+    }
+  },
+  root = {
+    "handlers": ["h"],
+    "level": logging.DEBUG,
+  },
+)
+
+logging.config.dictConfig(logging_config)
 
 
 def scan(rootdir):
