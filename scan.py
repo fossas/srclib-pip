@@ -1,15 +1,18 @@
-#!/usr/bin/python
+from __future__ import print_function
 
+import logging
 from os import path
 from glob import glob
 import pip
 import json
 
+logging.basicConfig()
+
 
 def scan(rootdir):
   req_files = list(set(glob(path.join(rootdir, "**/*requirements*.txt"))) | set(glob(path.join(rootdir, "*requirements*.txt"))))
   source_units = [construct_source_unit(rootdir, req_file) for req_file in req_files]
-  print json.dumps(source_units)
+  print(json.dumps(source_units))
   return source_units
 
 def construct_source_unit(rootdir, requirements_path):
@@ -24,15 +27,17 @@ def construct_source_unit(rootdir, requirements_path):
     "Dir": relpath,
     "Dependencies": [construct_dependency(install_req) for install_req in install_reqs],
     "Data": {
-      "text": file(requirements_path).read()
+      "text": open(requirements_path).read()
     }
   }
 
 def construct_dependency(install_req):
   name = install_req.name
-  specs = str(install_req.req.specifier)
+  specs = install_req.req.specs
+  if install_req.link is not None:
+    name = install_req.link.url
 
   return {
     "Name": name,
-    "Version": specs
+    "Specs": specs
   }
