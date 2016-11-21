@@ -6,13 +6,9 @@ import os.path
 import subprocess
 
 rootdir = os.path.dirname(os.path.dirname(__file__))
-python2 = os.path.join(rootdir, ".env2", "bin", "python")
-python3 = os.path.join(rootdir, ".env2", "bin", "python")
+python2 = os.path.join(rootdir, ".env", "bin", "python")
+python3 = os.path.join(rootdir, ".env", "bin", "python")
 
 args = [python2, "-m", "srclib-pip"]
 args.extend(sys.argv[1:])
 subprocess.check_call(args)
-
-# args = [python3, "-m", "srclib-pip"]
-# args.extend(sys.argv[1:])
-# subprocess.check_call(args)
