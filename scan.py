@@ -36,7 +36,7 @@ logging.config.dictConfig(logging_config)
 def scan(rootdir):
   req_files = list(set(glob(path.join(rootdir, "**/*requirements*.txt"))) | set(glob(path.join(rootdir, "*requirements*.txt"))))
   source_units = [construct_source_unit(rootdir, req_file) for req_file in req_files]
-  print(json.dumps(source_units))
+  print(json.dumps(merge_source_units(source_units)))
   return source_units
 
 def construct_source_unit(rootdir, requirements_path):
@@ -50,6 +50,7 @@ def construct_source_unit(rootdir, requirements_path):
     "Name": name,
     "Dir": relpath,
     "Dependencies": [construct_dependency(install_req) for install_req in install_reqs],
+    "Files": [path.relpath(requirements_path, rootdir)],
     "Data": {
       "text": open(requirements_path).read()
     }
@@ -65,3 +66,20 @@ def construct_dependency(install_req):
     "Name": name,
     "Specs": specs
   }
+
+def merge_source_units(source_units):
+  def helper(acc_unit, unit):
+    if unit:
+      acc_unit["Files"] = list(set(acc_unit["Files"]) | set(unit["Files"]))
+      acc_unit["Data"] = {}
+      acc_unit["Dependencies"].extend(unit["Dependencies"])
+    return acc_unit
+
+  new_source_units = []
+  lookup = {source_unit["Name"]: [] for source_unit in source_units}
+  for source_unit in source_units:
+    lookup[source_unit["Name"]].append(source_unit)
+  for source_units in lookup.itervalues():
+    new_source_units.append(reduce(helper, source_units))
+
+  return new_source_units
