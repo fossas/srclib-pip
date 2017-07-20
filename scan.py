@@ -43,20 +43,20 @@ def construct_source_unit(rootdir, requirements_path):
   pkg = path.dirname(requirements_path)
   name = path.basename(pkg)
   relpath = path.relpath(pkg, rootdir)
-  install_reqs = [install_req for install_req in pip.req.parse_requirements(requirements_path, session=pip.download.PipSession())]
+  install_reqs = [(install_req, requirements_path) for install_req in pip.req.parse_requirements(requirements_path, session=pip.download.PipSession())]
 
   return {
     "Type": "PythonRequirementsPackage",
     "Name": name,
     "Dir": relpath,
-    "Dependencies": [construct_dependency(install_req) for install_req in install_reqs],
+    "Dependencies": [construct_dependency(install_req[0], install_req[1]) for install_req in install_reqs],
     "Files": [path.relpath(requirements_path, rootdir)],
     "Data": {
       "text": open(requirements_path).read()
     }
   }
 
-def construct_dependency(install_req):
+def construct_dependency(install_req, req_path):
   name = install_req.name
   specs = install_req.req.specs
   if install_req.link is not None:
@@ -64,7 +64,8 @@ def construct_dependency(install_req):
 
   return {
     "Name": name,
-    "Specs": specs
+    "Specs": specs,
+    "Path": req_path
   }
 
 def merge_source_units(source_units):
