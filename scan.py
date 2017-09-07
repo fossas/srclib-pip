@@ -49,7 +49,7 @@ def construct_source_unit(rootdir, requirements_path):
     "Type": "PythonRequirementsPackage",
     "Name": name,
     "Dir": relpath,
-    "Dependencies": [construct_dependency(install_req[0], install_req[1]) for install_req in install_reqs],
+    "Dependencies": [construct_dependency(install_req[0], relpath) for install_req in install_reqs],
     "Files": [path.relpath(requirements_path, rootdir)],
     "Data": {
       "text": open(requirements_path).read()
