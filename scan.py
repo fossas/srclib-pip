@@ -34,7 +34,10 @@ logging.config.dictConfig(logging_config)
 
 
 def scan(rootdir):
-  req_files = list(set(glob(path.join(rootdir, "**/*requirements*.txt"))) | set(glob(path.join(rootdir, "*requirements*.txt"))))
+  # Requirements files are found by matching files to the *require*.txt format which matches files such as
+  # "temp-requirements.txt" and "requires.txt". Files located at the root directory and two levels deeper
+  # are matched which ensures that files located at "project/req-files/requirements.txt" are found.
+  req_files = list(set(glob(path.join(rootdir, "**/**/*require*.txt"))) | set(glob(path.join(rootdir, "**/*require*.txt"))) | set(glob(path.join(rootdir, "*require*.txt"))))
   source_units = [construct_source_unit(rootdir, req_file) for req_file in req_files]
   print(json.dumps(merge_source_units(source_units)))
   return source_units
